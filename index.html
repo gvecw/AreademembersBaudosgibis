@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baú dos Desenhos — Sua área de acesso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#10204E;
+    --navy-deep:#0A1638;
+    --navy-card:#0C1A42;
+    --gold:#F7C90F;
+    --gold-deep:#D9A600;
+    --red:#E2231F;
+    --orange:#F5850D;
+    --green:#2ECC71;
+    --white:#FFFFFF;
+    --body:#C9D6F0;
+    --line:rgba(255,255,255,0.10);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--navy);
+    color:var(--white);
+    font-family:'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none;}
+
+  .status-bar{
+    background:var(--green);
+    color:#06301A;
+    text-align:center;
+    font-family:'Inter',sans-serif;
+    font-weight:800;
+    font-size:13px;
+    letter-spacing:0.02em;
+    padding:9px 12px;
+  }
+
+  .ticker{
+    background:var(--orange);
+    overflow:hidden;
+    white-space:nowrap;
+    border-bottom:2px solid rgba(0,0,0,0.15);
+  }
+  .ticker-track{
+    display:inline-block;
+    padding:8px 0;
+    animation:scroll-left 26s linear infinite;
+  }
+  .ticker-track span{
+    display:inline-block;
+    font-family:'Inter',sans-serif;
+    font-weight:800;
+    font-size:12.5px;
+    letter-spacing:0.03em;
+    color:#241300;
+    padding:0 22px;
+    text-transform:uppercase;
+  }
+  @keyframes scroll-left{
+    0%{transform:translateX(0);}
+    100%{transform:translateX(-50%);}
+  }
+
+  .hero{
+    text-align:center;
+    padding:56px 5vw 40px;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 0%, rgba(247,201,15,0.10), transparent 60%),
+      var(--navy);
+  }
+  .hero h1{
+    font-family:'Archivo Black', sans-serif;
+    font-weight:400;
+    font-size:clamp(28px,5vw,48px);
+    line-height:1.12;
+    letter-spacing:0.01em;
+    margin:0 0 20px;
+    text-transform:uppercase;
+  }
+  .hero h1 .gold{color:var(--gold);}
+  .hero p{
+    color:var(--body);
+    font-size:16px;
+    line-height:1.55;
+    max-width:620px;
+    margin:0 auto 8px;
+  }
+
+  .search-wrap{display:flex;justify-content:center;padding:26px 5vw 6px;}
+  .search{
+    display:flex;align-items:center;gap:10px;
+    width:100%;max-width:420px;
+    background:rgba(255,255,255,0.08);
+    border:1.5px solid var(--line);
+    border-radius:999px;
+    padding:12px 18px;
+  }
+  .search svg{width:16px;height:16px;flex:none;color:var(--body);}
+  .search input{
+    background:none;border:none;outline:none;
+    color:var(--white);font-family:'Inter',sans-serif;font-size:14px;width:100%;
+  }
+  .search input::placeholder{color:var(--body);opacity:0.7;}
+  .no-results{display:none;text-align:center;padding:40px 5vw;color:var(--body);font-size:14px;}
+
+  main{padding:34px 0 20px;}
+  .cat-row{margin-bottom:38px;}
+  .cat-head{
+    display:flex;align-items:baseline;gap:10px;
+    padding:0 5vw;margin-bottom:14px;
+  }
+  .cat-head h2{
+    font-family:'Archivo Black', sans-serif;
+    font-weight:400;
+    font-size:19px;
+    text-transform:uppercase;
+    margin:0;
+    color:var(--gold);
+  }
+  .cat-count{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--body);
+    opacity:0.75;
+  }
+  .cat-track {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    padding: 10px 5vw 22px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    scrollbar-color: rgba(247, 201, 15, 0.5) rgba(255, 255, 255, 0.05);
+  }
+  /* Estilo da barra de rolagem horizontal para Chrome, Safari, Edge e iOS */
+  .cat-track::-webkit-scrollbar { display: none !important; 
+    height: 7px !important;
+    display: block !important;
+  }
+  .cat-track::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 10px;
+    margin: 0 5vw;
+  }
+  .cat-track::-webkit-scrollbar-thumb {
+    background: rgba(247, 201, 15, 0.6) !important; /* Dourado bem visível */
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .cat-track::-webkit-scrollbar-thumb:hover {
+    background: var(--gold) !important;
+  }
+
+  .poster {
+    position: relative;
+    flex: none;
+    width: 145px;
+    scroll-snap-align: start;
+    border-radius: 12px;
+    border: 1.5px solid rgba(247, 201, 15, 0.25); /* Borda mais fina e suave */
+    background: linear-gradient(180deg, var(--navy-card) 0%, rgba(12, 26, 66, 0.8) 100%);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 20px -8px rgba(0,0,0,0.7);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+    backdrop-filter: blur(10px);
+  }
+  .poster:hover, .poster:focus-visible {
+    transform: translateY(-6px) scale(1.03);
+    border-color: var(--gold);
+    box-shadow: 0 12px 28px -8px rgba(0,0,0,0.8), 0 0 20px rgba(247, 201, 15, 0.25);
+  }
+  .poster-art {
+    position: relative;
+    height: 195px;
+    background: linear-gradient(160deg, var(--tone-a,#1c2f66) 0%, var(--tone-b,#0a1638) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  /* Estilo das Letras Iniciais Premium nos Cards Sem Capa */
+  .poster-initial {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 54px;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.12); /* Letra elegante e discreta */
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    user-select: none;
+    pointer-events: none;
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+  .poster:hover .poster-initial {
+    color: rgba(255, 255, 255, 0.22);
+    transform: scale(1.1);
+  }
+  .poster-play{
+    width:34px;height:34px;
+    border-radius:50%;
+    background:rgba(0,0,0,0.35);
+    border:1.5px solid rgba(255,255,255,0.4);
+    color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;
+    opacity:0;
+    transition:opacity .15s ease;
+  }
+  .poster:hover .poster-play{opacity:1;}
+  .poster-caption{
+    flex:1;
+    display:flex;align-items:center;
+    padding:9px 10px;
+    background:#0A1638;
+    border-top:1.5px solid var(--gold);
+  }
+  .poster-title{
+    font-family:'Inter', sans-serif;
+    font-weight:700;
+    font-size:11.5px;
+    line-height:1.28;
+    color:#fff;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+
+  .poster.is-hidden{display:none;}
+  .cat-row.is-hidden{display:none;}
+
+  .bonus{padding:14px 5vw 44px;}
+  .bonus-head span{
+    font-family:'JetBrains Mono', monospace;font-size:11px;font-weight:700;
+    color:var(--green);text-transform:uppercase;letter-spacing:0.05em;
+  }
+  .bonus-head h2{
+    font-family:'Archivo Black', sans-serif;font-weight:400;font-size:24px;
+    text-transform:uppercase;margin:8px 0 18px;color:var(--gold);
+  }
+  .bonus-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+  .bonus-card{
+    background:rgba(255,255,255,0.05);
+    border:1.5px dashed rgba(247,201,15,0.5);
+    border-radius:12px;padding:18px 20px;
+  }
+  .bonus-card .b-num{
+    font-family:'JetBrains Mono', monospace;font-size:10px;font-weight:700;
+    color:var(--body);text-transform:uppercase;letter-spacing:0.05em;
+  }
+  .bonus-card h3{font-size:15px;margin:8px 0 6px;font-weight:800;}
+  .bonus-card p{font-size:12.5px;color:var(--body);margin:0 0 14px;line-height:1.4;}
+  .bonus-card .pending{
+    display:inline-block;
+    font-family:'JetBrains Mono', monospace;font-size:11px;font-weight:700;
+    color:var(--navy);background:var(--gold);
+    padding:7px 13px;border-radius:999px;
+  }
+
+  .support{text-align:center;padding:20px 5vw 50px;border-top:1px solid var(--line);}
+  .support h2{
+    font-family:'Archivo Black', sans-serif;font-weight:400;font-size:22px;
+    text-transform:uppercase;margin:26px 0 10px;
+  }
+  .support p{color:var(--body);font-size:13.5px;max-width:420px;margin:0 auto 20px;}
+  .cta-pill{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:'Inter',sans-serif;font-weight:800;font-size:15px;
+    color:#241300;
+    background:var(--gold);
+    border:3px solid #241300;
+    border-radius:999px;
+    padding:15px 32px;
+    box-shadow:0 6px 0 var(--gold-deep);
+  }
+
+  footer{
+    text-align:center;padding:20px 5vw 40px;
+    font-family:'JetBrains Mono', monospace;font-size:10.5px;
+    letter-spacing:0.02em;color:var(--body);opacity:0.6;
+  }
+  footer p{margin:4px 0;max-width:560px;margin-left:auto;margin-right:auto;}
+
+  @media (max-width:640px){
+    .poster {
+      width: 120px;
+    }
+    .poster-art {
+      height: 162px;
+    }
+    .poster-initial {
+      font-size: 46px;
+    }
+    .poster-title {
+      font-size: 11.5px;
+    }
+    .cat-track {
+      padding: 8px 5vw 18px; /* Ajuste fino de padding no mobile */
+      gap: 12px;
+    }
+  }
+
+  /* Estilo da barra de progresso de rolagem customizada */
+  .cat-scrollbar {
+    width: 60px;
+    height: 3.5px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 2px;
+    margin: 4px auto 0 auto;
+    position: relative;
+    display: none; /* Ativado via JS se houver rolagem */
+  }
+  .cat-scrollbar-thumb {
+    width: 24px;
+    height: 100%;
+    background: var(--gold);
+    border-radius: 2px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translateX(0);
+    will-change: transform;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="status-bar">✅ COMPRA CONFIRMADA — SEU ACESSO ESTÁ LIBERADO</div>
+
+<div class="ticker">
+  <div class="ticker-track">
+    <span>ACESSO VITALÍCIO</span><span>DOWNLOAD IMEDIATO</span><span>SEM MENSALIDADE</span><span>GARANTIA 30 DIAS</span><span>2.500+ DESENHOS CLÁSSICOS</span><span>ANOS 80, 90 E 2000</span>
+    <span>ACESSO VITALÍCIO</span><span>DOWNLOAD IMEDIATO</span><span>SEM MENSALIDADE</span><span>GARANTIA 30 DIAS</span><span>2.500+ DESENHOS CLÁSSICOS</span><span>ANOS 80, 90 E 2000</span>
+  </div>
+</div>
+
+<header class="hero">
+  <h1>Tudo que você comprou,<br><span class="gold">em um só lugar</span></h1>
+  <p>Seu acesso ao Baú dos Desenhos está liberado. Clique num título abaixo pra abrir a pasta com os episódios daquele desenho e escolher o que assistir.</p>
+</header>
+
+<div class="search-wrap">
+  <div class="search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    <input id="searchInput" type="text" placeholder="Buscar um desenho...">
+  </div>
+</div>
+
+<main id="mainRows">
+
+  <!-- ===== SUPER-HERÓIS ===== -->
+  <section class="cat-row">
+    <div class="cat-head">
+      <h2>Super-Heróis</h2>
+      <span class="cat-count">16 títulos</span>
+    </div>
+    <div class="cat-track">
+      <a class="poster" href="https://drive.google.com/drive/folders/1F_fOUGYgGiJOqP46-iD57JVP8ohnFDP-?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="background-image:url(imagens/he_man_poster.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">He-Man</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1Hi8x-ObFS8W9YkdLNTZBRtoKL0TN2bzO?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#3a2a70;--tone-b:#150c33"><span class="poster-initial">B</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Batman do Futuro</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1kiH6hy-yfBSabo3tfn-NxWgJslnReAvd?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#3a2a70;--tone-b:#150c33"><span class="poster-initial">B</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Batman do Futuro · 2</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1fOpSqXKr0LvMhi-Snh3Q5rrrNEShS84_?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#3a2a70;--tone-b:#150c33"><span class="poster-initial">B</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Batman e Robin</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1_TeeHicWcdrV9kxUTIaG2Aiysp0hd58D?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#3a2a70;--tone-b:#150c33"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Aquaman</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1HhYmAQhghD8kDJtCC3VW0Y10LPqMjFHx?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#3a2a70;--tone-b:#150c33"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">As Meninas Superpoderosas</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/10s-SLAgMyTRJM9VXl7qT5agnBVwpgBkz?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#3a2a70;--tone-b:#150c33"><span class="poster-initial">H</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Hulk vs Wolverine</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1-y44dXykg4IoO4zR9tihpQ4IfWMxcfHU?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#3a2a70;--tone-b:#150c33"><span class="poster-initial">L</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Liga da Justiça</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1iYlurYkaZB7Sg7g4o8IF4Occ2LhAYB4V?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="background-image:url(imagens/the_mask.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Máscara</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/192cy8gLWi2o2e4BXMi2Reoq57w0ZCBoR?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#3a2a70;--tone-b:#150c33"><span class="poster-initial">O</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Os Jovens Titãs</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/14QpV07_0Ygsoxs_yztAhNW2MdBjUETUa?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#3a2a70;--tone-b:#150c33"><span class="poster-initial">S</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Superman</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1kTorKKGTzapOH90KStXxbqBawZxsQEIW?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#3a2a70;--tone-b:#150c33"><span class="poster-initial">T</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">ThunderCats</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1YFXfoE8IG0Sf7hG8DATUwP3BmDpUDG76?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#3a2a70;--tone-b:#150c33"><span class="poster-initial">V</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Vingadores</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1ORjYvqCWWrksaBqawjm-tU4A7AhgXc2_?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#3a2a70;--tone-b:#150c33"><span class="poster-initial">W</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Wolverine e os X-Men</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1C0QIBX0CRIeuho7BOmHGqG6zqGCLqzSE?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#3a2a70;--tone-b:#150c33"><span class="poster-initial">X</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">X-Men</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1lJCgZmxiSPNmLSBxYyTEGf1sJW15GxwD?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#3a2a70;--tone-b:#150c33"><span class="poster-initial">X</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">X-Men Volume 1</span></span>
+      </a>
+    </div>
+    <div class="cat-scrollbar"><div class="cat-scrollbar-thumb"></div></div>
+  </section>
+
+  <!-- ===== CLÁSSICOS HANNA-BARBERA ===== -->
+  <section class="cat-row">
+    <div class="cat-head">
+      <h2>Clássicos Hanna-Barbera</h2>
+      <span class="cat-count">18 títulos</span>
+    </div>
+    <div class="cat-track">
+      <a class="poster" href="https://drive.google.com/drive/folders/1JNVxhPJYB76A3CNzqyirdMZWlKl356VO?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">A Formiga Atômica</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/18mtwK9Lc71B__IsOYxuaJaiTYgYDkW2B?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">A Formiga e o Tamanduá</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1sIWRoDCotCmUhuskXX0WPatPwIVnbML1?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">A Formiga e o Tamanduá · 2</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1teNVy1fa7VQGWLgvHdl04USMmkzBc7VL?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">A Pantera Cor-de-Rosa</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1PSdphNM1_ZzjU4Bb4A70LhMGYS0SM4Dw?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">B</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Betty Atômica</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/117AuVWutnbZI_BmqjjJb7mG0hsFiPoT1?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">C</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Capitão Caverna</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1LWHlU7kyrwGQjAp68JnVmpz-3reJVrim?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">L</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Ligeirinho</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1U16U-xJxD9R9NsCd1yb6QL_7ZrT_5cAs?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">L</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Looney Tunes</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1VWxkETUpBdt34kjokB9KH-S5yHMK7522?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">M</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Manda-Chuva</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1fi0wljR5TGRaV7A5jQGILrC83WS4vWZu?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">O</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Os Flintstones</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1wMCpJB2Ptaf2fbStYORuV-ckUf8zYT0M?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">P</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Papa-Léguas</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1q1qXrnFL4hwtvQevnaQG8DING6uQcfmr?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">P</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Perna Longa e Sua Turma</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1l-Bl-ek4S2eSoSaHgKXCYUBGP9DKwmdG?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="background-image:url(imagens/pica_pau.webp);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Pica-Pau</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1ShbYqzh3GgLjTWWoBp3yNobjJDz-uaDG?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">P</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Popeye</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1pKPgUdbVx33bRCk8xS5yDpVCAMLUzJ0D?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">P</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Popeye 75th Anniversary</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1ee6sV28wSKnO0TT5EN9LhiuQDg1R1UEB?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="background-image:url(imagens/scooby_doo.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Scooby-Doo</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1OfKv3PGtSXfbQgNHJ-Wb9nBWPlEWxDtb?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">S</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Speed Racer</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1tPVdQsVmqmhOTKbLZr8mUSYnnttvf3L_?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">Z</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Zé Colmeia</span></span>
+      </a>
+    </div>
+    <div class="cat-scrollbar"><div class="cat-scrollbar-thumb"></div></div>
+  </section>
+
+  <!-- ===== ANIME & TOKUSATSU ===== -->
+  <section class="cat-row">
+    <div class="cat-head">
+      <h2>Anime &amp; Tokusatsu</h2>
+      <span class="cat-count">11 títulos</span>
+    </div>
+    <div class="cat-track">
+      <a class="poster" href="https://drive.google.com/drive/folders/1fMSLkQw9RYP95QBXyUtAqLBIBSu90Eok?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a1f5c;--tone-b:#2b0a20"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Astro Boy</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1KJFgAaQy2NXLRvOv6ilohzvmfhmdKtH6?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a1f5c;--tone-b:#2b0a20"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Astro Boy · 2</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/10m2xXCdGzEiv5Ab3Lwt3Nheggy6gRUTB?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a1f5c;--tone-b:#2b0a20"><span class="poster-initial">B</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Beyblade</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1umzi-gR7zzqM_a3cXq26Rtb9s_XtsKSf?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a1f5c;--tone-b:#2b0a20"><span class="poster-initial">B</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Black Kamen Rider</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1OP2R5ol97ZwfMgIE2ljn_IY2I_f4h7y4?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a1f5c;--tone-b:#2b0a20"><span class="poster-initial">C</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Captain Tsubasa</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1Q5xja_lpGhdGq9QMNleAmOpldK5QGVXi?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a1f5c;--tone-b:#2b0a20"><span class="poster-initial">C</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Cavaleiros do Zodíaco</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1uVwSAGjLvyNpuCiYnvFUH81ji5NyLXoe?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a1f5c;--tone-b:#2b0a20"><span class="poster-initial">C</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Cavaleiros do Zodíaco · 2</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1G3Rv2rmJUIUjL_3FgElDw6i0kM01mN6J?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a1f5c;--tone-b:#2b0a20"><span class="poster-initial">D</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Digimon Adventure</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1oaXG7-c-moSdILU1G-YS157afaraYQJy?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="background-image:url(imagens/dragon_ball.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Dragon Ball</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1qOGh4EDj7PCGkmefHYv724Uqqo9edU0c?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="background-image:url(imagens/pokémon.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Pokémon</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1vDc-3L2D2_YxEHstFEA9NE13f05oNU-s?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a1f5c;--tone-b:#2b0a20"><span class="poster-initial">T</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Tokusatsu</span></span>
+      </a>
+    </div>
+    <div class="cat-scrollbar"><div class="cat-scrollbar-thumb"></div></div>
+  </section>
+
+  <!-- ===== COMÉDIA & SITCOM ===== -->
+  <section class="cat-row">
+    <div class="cat-head">
+      <h2>Comédia &amp; Sitcom</h2>
+      <span class="cat-count">10 títulos</span>
+    </div>
+    <div class="cat-track">
+      <a class="poster" href="https://drive.google.com/drive/folders/1wma1cKZODl6EbuSH1hMKTcIwf6hGJaHp?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a4b0f;--tone-b:#2e1a06"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">A Turma da Pesada</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1ktJ6FLVXo3RmH0al1aR0jxLZrpWXLZdT?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a4b0f;--tone-b:#2e1a06"><span class="poster-initial">B</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Bob Esponja</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1j07NLGetIBVWaU7Pgb-I11dGLTWlCZ1t?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a4b0f;--tone-b:#2e1a06"><span class="poster-initial">C</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Chaves HD · Pasta 01</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1D3bCTY0KDs8Bl0CLVbeO8eTdCQMe3uk7?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a4b0f;--tone-b:#2e1a06"><span class="poster-initial">E</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Eu, a Patroa e as Crianças</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/16QTJqtqztJUp7bHA1IOTjHQKdORP1WlT?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a4b0f;--tone-b:#2e1a06"><span class="poster-initial">F</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Futurama</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1fuki0BrCPcxGQLLHJ-rhTwFdbDz665dC?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a4b0f;--tone-b:#2e1a06"><span class="poster-initial">L</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Loucademia de Polícia</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1aM0YqN5NTB-YSRy69m0ZhkyeKkkQilUm?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a4b0f;--tone-b:#2e1a06"><span class="poster-initial">O</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Os Simpsons</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1JJDEdwrXS15Y1A1vUZ7ZVqtCbV4QYD_T?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a4b0f;--tone-b:#2e1a06"><span class="poster-initial">O</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Os Trapalhões</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1hqvKBZBOolRidbD6HdOn_hVz_cqQLL-C?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a4b0f;--tone-b:#2e1a06"><span class="poster-initial">T</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Todo Mundo Odeia o Chris</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1R0_kKo2pFJSSExKmsO1FoBWmSlRXLSJc?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#7a4b0f;--tone-b:#2e1a06"><span class="poster-initial">U</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Uma Família da Pesada</span></span>
+      </a>
+    </div>
+    <div class="cat-scrollbar"><div class="cat-scrollbar-thumb"></div></div>
+  </section>
+
+  <!-- ===== INFANTIL CLÁSSICO ===== -->
+  <section class="cat-row">
+    <div class="cat-head">
+      <h2>Infantil Clássico</h2>
+      <span class="cat-count">23 títulos</span>
+    </div>
+    <div class="cat-track">
+      <a class="poster" href="https://drive.google.com/drive/folders/1z9aft0QDPMJqxDL-Nf7xU_lp4VT-2wVv?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">1</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">101 Dálmatas</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1OoFG4bnXTkxkSW_003kSZnGU8pqo6b57?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">A Era do Gelo (filme)</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1613pMvLQgN-GBNPhhXdsqGsvJSVoc4gW?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">A Família Urso</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1JIVMI3IBbEPUbWW-39Gn6uPThVpMMIE0?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">A Mansão Foster</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1JGh2Z46LSaMjzBB6Uf-1kixKnNZ2DZam?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">A Pequena Sereia</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1stfWGBevvEHPejIkU0oJGpEv0AoUldPq?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">A Turma do Pateta</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1Ke6r6RgMLEIMBZDVcaJrJQ49y_UrMOXW?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">A Vaca e o Frango · T1</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1JjVE4AjSaie7eLNBRJViFnEQEDYB83zG?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">A Vaca e o Frango · T2</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1AE8Zuztf7U6exoOwUv4wTCCrfoLdSFdY?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">A Vaca e o Frango · T3</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1qcy903NiYpzJYQAXjQPkRZRW5ekVON3r?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">A Vaca e o Frango · T4</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1tlk1XSvcDH7LHvhzA8tdiuEpKIfoCGwc?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">C</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Charlie Brown e Snoopy</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1_TfMOomGwnbQ1JzVPM6RauJiwQaBns30?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">C</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Coragem, o Cão Covarde</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1Y27-9FOqyhPXolOXUnEoTJaQfNFjT040?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">D</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Dennis, o Pimentinha</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1lw__WyeZhL82iEGadMUcooPU-euLFxqB?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">D</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Dora, a Aventureira</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1ESSaqHli-Qy7Xg-6o8hMVDO2bk7H_Cou?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">D</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Doug e Seus Amigos</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1CXaLaM8ZZ2j4FTrbkvYMBZkxcT5GvPtV?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">D</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">DuckTales</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1TUqWTC84Uy8Q9JTT90XNEvlJUnsWxrCn?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">D</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">DuckTales · 2</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/17tugSGqarDaFBF6cwl5ocUaEuiLz3tyD?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="background-image:url(imagens/luluzinha.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Luluzinha</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/12RJinXG_Z0Yz-ihavv_9OzmU3LDqjRqw?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">M</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Mickey Mouse</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1qi6qmZz3qDGfqfxNfiDPkvv8NF0fGTCN?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">O</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Os Smurfs</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1bHlhNgdxKaWvxR9nXwCtZ28mXSKGILjX?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">P</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Pingu</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1YEYnE1HeM6-iv1udZaAKbNgBc2oaNbY-?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">U</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Ursinho Pooh</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1Qg4wD2M-g_MFC0gYMbwbi2wmGNF9r5DC?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#1c4f8f;--tone-b:#0a1f3d"><span class="poster-initial">U</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Ursinhos Carinhosos</span></span>
+      </a>
+    </div>
+    <div class="cat-scrollbar"><div class="cat-scrollbar-thumb"></div></div>
+  </section>
+
+  <!-- ===== AÇÃO & AVENTURA 80/90 ===== -->
+  <section class="cat-row">
+    <div class="cat-head">
+      <h2>Ação &amp; Aventura 80/90</h2>
+      <span class="cat-count">21 títulos</span>
+    </div>
+    <div class="cat-track">
+      <a class="poster" href="https://drive.google.com/drive/folders/1cMh54FHs0fB58OUx_vayh1IyDevTRpts?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">B</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Ben 10</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1i7nMbyRPWxH0cVUuVBYfSAIcmQqLX0wa?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">B</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Bravestarr</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1VUlf37rVMitno4jNO5gvfZB7KUbLW73n?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">C</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Capitão Planeta</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1O9TSld0kTaj8ooIJr1WUlrG4lhcMBca8?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">C</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Cavaleiro das Arábias</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1H0cq8ArCovyByRUP6puyLy_Lrvmq-oqH?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="background-image:url(imagens/caverna_do_dragão.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Caverna do Dragão</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1SueUAopDYYo-mJBXXpueuT29oNkx3QlT?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">C</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Comando em Ação</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1cjoVSPEyGkHe1LCGWqq2jZrTJ6Si-AKV?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">F</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Feiticeira Faceira</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1w1CjAczXSJCIObgbesUdfIhlwQUlYMgb?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">K</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Kick Buttowski</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1DjO4GUygmWu3B8aFhULmm0UCExPge3RH?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">N</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Nascar 2001</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1tJmS8A0Xxw3-cE_6uuDQFokTWemCykV4?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">R</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Rambo</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/18erbjEGcAeasesiJvPYrBBwAYo_DxEPV?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">R</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Robocop</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1Z7a0dn8tjwGo83JWztOTxRN6JSc5P0Xg?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">S</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Samurai Jack</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1dRdGcwa-R0EQwf5P10dPfVoLaBCJ-5x-?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">S</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">She-Ra</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1zaGZ3ePihFpRwqC6itDMsee6tk7M0SYV?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">S</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Sonic</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1KlUUd3WKQ3ZwMqDjbBiTK7H3twYfhW50?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">S</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Street Fighter</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/14exHDWXC7Z7mEZ_Y-RL9YWYwrg0pW1Zx?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">S</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Super Galo</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1ct6z8B1LbEIqlq-W-rQgSSraa0TSr0yQ?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">S</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Super Mario</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1RHiUWrbgoDxcRTmC4PnQJmbzQae3rt1v?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">T</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Teatro Ratibum</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1VO_wEhPcxF-e_90j0cAp2WM1YI2UuwSG?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">T</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Transformers</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1Y5_QGx_mqrq2r_KB1F4DYxNFyRMN-i1f?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">T</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Três Espiãs Demais</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1L1l4W12uG3szkznTfPd_G8eST8wfGkdY?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#8a3010;--tone-b:#2e0f05"><span class="poster-initial">T</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Três Espiãs Demais · 2</span></span>
+      </a>
+    </div>
+    <div class="cat-scrollbar"><div class="cat-scrollbar-thumb"></div></div>
+  </section>
+
+  <!-- ===== FILMES & SÉRIES ===== -->
+  <!-- ⚠️ ATENÇÃO: esta seção foi parcialmente reconstruída pois o HTML enviado foi cortado no chat.
+       Por favor, verifique os 5 últimos cards desta seção e corrija os links se necessário. -->
+  <section class="cat-row">
+    <div class="cat-head">
+      <h2>Filmes &amp; Séries</h2>
+      <span class="cat-count">7 títulos</span>
+    </div>
+    <div class="cat-track">
+      <a class="poster" href="https://drive.google.com/drive/folders/1Uh0nVWEiyYJy-e3vutG3FJn5GHyDvZG7?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#2f5030;--tone-b:#0f1f10"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">A Família Addams (1970)</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1lm3eWUO0kyL2rdct-8B7v3Qfga-v-z50?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#2f5030;--tone-b:#0f1f10"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">As Aventuras de Tintin · 2</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1wcOCanZi3Hk4tCnbDiU-pQW7B4vdO6Jm?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#2f5030;--tone-b:#0f1f10"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">As Aventuras de Jackie Chan</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1Dy-Rsc_-FMqnJoMzm-VJrzs3jRtWYsXi?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#2f5030;--tone-b:#0f1f10"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">As Aventuras de Tintin</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1oWvP4LgvCifxITU7fabDDLFwqfYJHrI6?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#2f5030;--tone-b:#0f1f10"><span class="poster-initial">J</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Jackie Chan - Completo</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1pd0z19mi7U0tpdUmCLeq9J20vAGvIKNi?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#2f5030;--tone-b:#0f1f10"><span class="poster-initial">T</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Turma da Mônica</span></span>
+      </a>
+      <a class="poster" href="https://drive.google.com/drive/folders/1SG93xU3-fM2x6oc5bRO3_BNOW4I0S5B7?usp=drive_link" target="_blank" rel="noopener">
+        <span class="poster-art" style="--tone-a:#2f5030;--tone-b:#0f1f10"><span class="poster-initial">Z</span><span class="poster-play">&#9654;</span></span>
+      <span class="poster-caption"><span class="poster-title">Zé Colmeia · 2</span></span>
+      </a>
+    </div>
+    <div class="cat-scrollbar"><div class="cat-scrollbar-thumb"></div></div>
+  </section>
+
+</main>
+
+<div class="no-results" id="noResults">Nenhum desenho encontrado para "<span id="noResultsTerm"></span>".</div>
+
+<section class="bonus">
+  <div class="bonus-head">
+    <span>🎁 Bônus Incluídos</span>
+    <h2>Conteúdo Extra</h2>
+  </div>
+  <div class="bonus-grid">
+    <div class="bonus-card">
+      <div class="b-num">Bônus 01</div>
+      <h3>Guia de Download</h3>
+      <p>Aprenda a baixar qualquer conteúdo diretamente para o seu dispositivo em poucos passos.</p>
+      <span class="pending">Em breve</span>
+    </div>
+    <div class="bonus-card">
+      <div class="b-num">Bônus 02</div>
+      <h3>Pacote TV Retrô</h3>
+      <p>Comerciais, vinhetas e aberturas clássicas dos anos 80 e 90 em qualidade remasterizada.</p>
+      <span class="pending">Em breve</span>
+    </div>
+    <div class="bonus-card">
+      <div class="b-num">Bônus 03</div>
+      <h3>Atualizações Vitalícias</h3>
+      <p>Novos títulos adicionados regularmente, sem custo adicional para membros.</p>
+      <span class="pending">Ativo</span>
+    </div>
+  </div>
+</section>
+
+<section class="support">
+  <h2>Precisa de Ajuda?</h2>
+  <p>Algum link com problema ou dúvida sobre o acesso? Fale com a gente pelo WhatsApp.</p>
+  <a class="cta-pill" href="https://wa.me/5500000000000" target="_blank" rel="noopener">💬 Falar no WhatsApp</a>
+</section>
+
+<footer>
+  <p>© 2024 Baú dos Desenhos · Todos os direitos reservados.</p>
+  <p>Conteúdo exclusivo para membros. Não compartilhe este link.</p>
+</footer>
+
+<script>
+  const searchInput   = document.getElementById('searchInput');
+  const noResults     = document.getElementById('noResults');
+  const noResultsTerm = document.getElementById('noResultsTerm');
+
+  searchInput.addEventListener('input', function () {
+    const query  = this.value.trim().toLowerCase();
+    const posters = document.querySelectorAll('.poster');
+    const rows    = document.querySelectorAll('.cat-row');
+    let anyVisible = false;
+
+    posters.forEach(p => {
+      const title = p.querySelector('.poster-title').textContent.toLowerCase();
+      p.classList.toggle('is-hidden', !!(query && !title.includes(query)));
+    });
+
+    rows.forEach(row => {
+      const vis = row.querySelectorAll('.poster:not(.is-hidden)').length;
+      row.classList.toggle('is-hidden', vis === 0);
+      if (vis > 0) anyVisible = true;
+    });
+
+    if (!query)          { noResults.style.display = 'none'; }
+    else if (!anyVisible){ noResultsTerm.textContent = this.value.trim(); noResults.style.display = 'block'; }
+    else                 { noResults.style.display = 'none'; }
+  });
+
+  // Lógica da barra de rolagem customizada
+  document.querySelectorAll('.cat-row').forEach(row => {
+    const track = row.querySelector('.cat-track');
+    const scrollbar = row.querySelector('.cat-scrollbar');
+    const thumb = row.querySelector('.cat-scrollbar-thumb');
+    
+    if (!track || !scrollbar || !thumb) return;
+    
+    function updateScrollbar() {
+      const maxScroll = track.scrollWidth - track.clientWidth;
+      if (maxScroll <= 0) {
+        scrollbar.style.display = 'none';
+        return;
+      }
+      scrollbar.style.display = 'block';
+      
+      const scrollPercentage = track.scrollLeft / maxScroll;
+      const trackWidth = scrollbar.clientWidth;
+      const thumbWidth = thumb.clientWidth;
+      
+      const maxTranslate = trackWidth - thumbWidth;
+      const translateX = scrollPercentage * maxTranslate;
+      
+      thumb.style.transform = `translateX(${translateX}px)`;
+    }
+    
+    track.addEventListener('scroll', updateScrollbar, { passive: true });
+    window.addEventListener('resize', updateScrollbar);
+    
+    // Executa após carregamento inicial
+    setTimeout(updateScrollbar, 300);
+  });
+
+</script>
+</body>
+</html>
