@@ -137,26 +137,27 @@
     padding: 10px 5vw 22px;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Firefox */
-    scrollbar-color: rgba(247, 201, 15, 0.5) rgba(255, 255, 255, 0.05);
+    scrollbar-width: auto;
+    scrollbar-color: rgba(247, 201, 15, 0.4) rgba(255, 255, 255, 0.05);
   }
-  /* Estilo da barra de rolagem horizontal para Chrome, Safari, Edge e iOS */
-  .cat-track::-webkit-scrollbar { display: none !important; 
-    height: 7px !important;
+  /* Barra de rolagem nativa estilizada e ARRASTÁVEL no PC */
+  .cat-track::-webkit-scrollbar {
+    height: 8px !important;
     display: block !important;
   }
   .cat-track::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05) !important;
+    background: rgba(255, 255, 255, 0.03) !important;
     border-radius: 10px;
     margin: 0 5vw;
   }
   .cat-track::-webkit-scrollbar-thumb {
-    background: rgba(247, 201, 15, 0.6) !important; /* Dourado bem visível */
+    background: rgba(247, 201, 15, 0.45) !important; /* Dourado arrastável */
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
   .cat-track::-webkit-scrollbar-thumb:hover {
     background: var(--gold) !important;
+    cursor: pointer;
   }
 
   .poster {
@@ -289,7 +290,7 @@
   }
   footer p{margin:4px 0;max-width:560px;margin-left:auto;margin-right:auto;}
 
-  @media (max-width:640px){
+  @media (max-width:768px){
     .poster {
       width: 120px;
     }
@@ -302,21 +303,30 @@
     .poster-title {
       font-size: 11.5px;
     }
+    /* Ocultar barra de rolagem nativa no Mobile (usando swiping natural) */
     .cat-track {
-      padding: 8px 5vw 18px; /* Ajuste fino de padding no mobile */
+      scrollbar-width: none;
+      padding: 8px 5vw 18px;
       gap: 12px;
+    }
+    .cat-track::-webkit-scrollbar {
+      display: none !important;
+    }
+    /* Mostrar a barra de progresso visual no Mobile */
+    .cat-scrollbar {
+      width: 60px;
+      height: 3.5px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 2px;
+      margin: 4px auto 0 auto;
+      position: relative;
+      display: block !important;
     }
   }
 
-  /* Estilo da barra de progresso de rolagem customizada */
+  /* Barra de progresso customizada (Escondida no PC por padrão) */
   .cat-scrollbar {
-    width: 60px;
-    height: 3.5px;
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 2px;
-    margin: 4px auto 0 auto;
-    position: relative;
-    display: none; /* Ativado via JS se houver rolagem */
+    display: none !important;
   }
   .cat-scrollbar-thumb {
     width: 24px;
@@ -413,19 +423,19 @@
       <span class="poster-caption"><span class="poster-title">ThunderCats</span></span>
       </a>
       <a class="poster" href="https://drive.google.com/drive/folders/1YFXfoE8IG0Sf7hG8DATUwP3BmDpUDG76?usp=drive_link" target="_blank" rel="noopener">
-        <span class="poster-art" style="--tone-a:#3a2a70;--tone-b:#150c33"><span class="poster-initial">V</span><span class="poster-play">&#9654;</span></span>
+        <span class="poster-art" style="background-image:url(imagens/vingadores_poster.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
       <span class="poster-caption"><span class="poster-title">Vingadores</span></span>
       </a>
       <a class="poster" href="https://drive.google.com/drive/folders/1ORjYvqCWWrksaBqawjm-tU4A7AhgXc2_?usp=drive_link" target="_blank" rel="noopener">
-        <span class="poster-art" style="--tone-a:#3a2a70;--tone-b:#150c33"><span class="poster-initial">W</span><span class="poster-play">&#9654;</span></span>
+        <span class="poster-art" style="background-image:url(imagens/wolverine_e_xmen_poster.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
       <span class="poster-caption"><span class="poster-title">Wolverine e os X-Men</span></span>
       </a>
       <a class="poster" href="https://drive.google.com/drive/folders/1C0QIBX0CRIeuho7BOmHGqG6zqGCLqzSE?usp=drive_link" target="_blank" rel="noopener">
-        <span class="poster-art" style="--tone-a:#3a2a70;--tone-b:#150c33"><span class="poster-initial">X</span><span class="poster-play">&#9654;</span></span>
+        <span class="poster-art" style="background-image:url(imagens/x_men_poster.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
       <span class="poster-caption"><span class="poster-title">X-Men</span></span>
       </a>
       <a class="poster" href="https://drive.google.com/drive/folders/1lJCgZmxiSPNmLSBxYyTEGf1sJW15GxwD?usp=drive_link" target="_blank" rel="noopener">
-        <span class="poster-art" style="--tone-a:#3a2a70;--tone-b:#150c33"><span class="poster-initial">X</span><span class="poster-play">&#9654;</span></span>
+        <span class="poster-art" style="background-image:url(imagens/x_men_volume_1_poster.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
       <span class="poster-caption"><span class="poster-title">X-Men Volume 1</span></span>
       </a>
     </div>
@@ -436,7 +446,7 @@
   <section class="cat-row">
     <div class="cat-head">
       <h2>Clássicos Hanna-Barbera</h2>
-      <span class="cat-count">18 títulos</span>
+      <span class="cat-count">17 títulos</span>
     </div>
     <div class="cat-track">
       <a class="poster" href="https://drive.google.com/drive/folders/1JNVxhPJYB76A3CNzqyirdMZWlKl356VO?usp=drive_link" target="_blank" rel="noopener">
@@ -472,19 +482,19 @@
       <span class="poster-caption"><span class="poster-title">Looney Tunes</span></span>
       </a>
       <a class="poster" href="https://drive.google.com/drive/folders/1VWxkETUpBdt34kjokB9KH-S5yHMK7522?usp=drive_link" target="_blank" rel="noopener">
-        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">M</span><span class="poster-play">&#9654;</span></span>
+        <span class="poster-art" style="background-image:url(imagens/manda_chuva_poster.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
       <span class="poster-caption"><span class="poster-title">Manda-Chuva</span></span>
       </a>
       <a class="poster" href="https://drive.google.com/drive/folders/1fi0wljR5TGRaV7A5jQGILrC83WS4vWZu?usp=drive_link" target="_blank" rel="noopener">
-        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">O</span><span class="poster-play">&#9654;</span></span>
+        <span class="poster-art" style="background-image:url(imagens/flintstones_poster.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
       <span class="poster-caption"><span class="poster-title">Os Flintstones</span></span>
       </a>
       <a class="poster" href="https://drive.google.com/drive/folders/1wMCpJB2Ptaf2fbStYORuV-ckUf8zYT0M?usp=drive_link" target="_blank" rel="noopener">
-        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">P</span><span class="poster-play">&#9654;</span></span>
+        <span class="poster-art" style="background-image:url(imagens/papaleguas_poster.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
       <span class="poster-caption"><span class="poster-title">Papa-Léguas</span></span>
       </a>
       <a class="poster" href="https://drive.google.com/drive/folders/1q1qXrnFL4hwtvQevnaQG8DING6uQcfmr?usp=drive_link" target="_blank" rel="noopener">
-        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">P</span><span class="poster-play">&#9654;</span></span>
+        <span class="poster-art" style="background-image:url(imagens/perna_longa_poster.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
       <span class="poster-caption"><span class="poster-title">Perna Longa e Sua Turma</span></span>
       </a>
       <a class="poster" href="https://drive.google.com/drive/folders/1l-Bl-ek4S2eSoSaHgKXCYUBGP9DKwmdG?usp=drive_link" target="_blank" rel="noopener">
@@ -492,23 +502,20 @@
       <span class="poster-caption"><span class="poster-title">Pica-Pau</span></span>
       </a>
       <a class="poster" href="https://drive.google.com/drive/folders/1ShbYqzh3GgLjTWWoBp3yNobjJDz-uaDG?usp=drive_link" target="_blank" rel="noopener">
-        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">P</span><span class="poster-play">&#9654;</span></span>
+        <span class="poster-art" style="background-image:url(imagens/popeye_poster.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
       <span class="poster-caption"><span class="poster-title">Popeye</span></span>
       </a>
-      <a class="poster" href="https://drive.google.com/drive/folders/1pKPgUdbVx33bRCk8xS5yDpVCAMLUzJ0D?usp=drive_link" target="_blank" rel="noopener">
-        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">P</span><span class="poster-play">&#9654;</span></span>
-      <span class="poster-caption"><span class="poster-title">Popeye 75th Anniversary</span></span>
-      </a>
+      
       <a class="poster" href="https://drive.google.com/drive/folders/1ee6sV28wSKnO0TT5EN9LhiuQDg1R1UEB?usp=drive_link" target="_blank" rel="noopener">
         <span class="poster-art" style="background-image:url(imagens/scooby_doo.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
       <span class="poster-caption"><span class="poster-title">Scooby-Doo</span></span>
       </a>
       <a class="poster" href="https://drive.google.com/drive/folders/1OfKv3PGtSXfbQgNHJ-Wb9nBWPlEWxDtb?usp=drive_link" target="_blank" rel="noopener">
-        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">S</span><span class="poster-play">&#9654;</span></span>
+        <span class="poster-art" style="background-image:url(imagens/speed_racer_poster.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
       <span class="poster-caption"><span class="poster-title">Speed Racer</span></span>
       </a>
       <a class="poster" href="https://drive.google.com/drive/folders/1tPVdQsVmqmhOTKbLZr8mUSYnnttvf3L_?usp=drive_link" target="_blank" rel="noopener">
-        <span class="poster-art" style="--tone-a:#1f6f5c;--tone-b:#0a2b23"><span class="poster-initial">Z</span><span class="poster-play">&#9654;</span></span>
+        <span class="poster-art" style="background-image:url(imagens/ze_colmeia_poster.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
       <span class="poster-caption"><span class="poster-title">Zé Colmeia</span></span>
       </a>
     </div>
@@ -519,27 +526,23 @@
   <section class="cat-row">
     <div class="cat-head">
       <h2>Anime &amp; Tokusatsu</h2>
-      <span class="cat-count">11 títulos</span>
+      <span class="cat-count">10 títulos</span>
     </div>
     <div class="cat-track">
       <a class="poster" href="https://drive.google.com/drive/folders/1fMSLkQw9RYP95QBXyUtAqLBIBSu90Eok?usp=drive_link" target="_blank" rel="noopener">
-        <span class="poster-art" style="--tone-a:#7a1f5c;--tone-b:#2b0a20"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
+        <span class="poster-art" style="background-image:url(imagens/astro_boy_poster.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
       <span class="poster-caption"><span class="poster-title">Astro Boy</span></span>
       </a>
-      <a class="poster" href="https://drive.google.com/drive/folders/1KJFgAaQy2NXLRvOv6ilohzvmfhmdKtH6?usp=drive_link" target="_blank" rel="noopener">
-        <span class="poster-art" style="--tone-a:#7a1f5c;--tone-b:#2b0a20"><span class="poster-initial">A</span><span class="poster-play">&#9654;</span></span>
-      <span class="poster-caption"><span class="poster-title">Astro Boy · 2</span></span>
-      </a>
       <a class="poster" href="https://drive.google.com/drive/folders/10m2xXCdGzEiv5Ab3Lwt3Nheggy6gRUTB?usp=drive_link" target="_blank" rel="noopener">
-        <span class="poster-art" style="--tone-a:#7a1f5c;--tone-b:#2b0a20"><span class="poster-initial">B</span><span class="poster-play">&#9654;</span></span>
+        <span class="poster-art" style="background-image:url(imagens/beyblade_poster.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
       <span class="poster-caption"><span class="poster-title">Beyblade</span></span>
       </a>
       <a class="poster" href="https://drive.google.com/drive/folders/1umzi-gR7zzqM_a3cXq26Rtb9s_XtsKSf?usp=drive_link" target="_blank" rel="noopener">
-        <span class="poster-art" style="--tone-a:#7a1f5c;--tone-b:#2b0a20"><span class="poster-initial">B</span><span class="poster-play">&#9654;</span></span>
+        <span class="poster-art" style="background-image:url(imagens/black_kamen_rider_poster.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
       <span class="poster-caption"><span class="poster-title">Black Kamen Rider</span></span>
       </a>
       <a class="poster" href="https://drive.google.com/drive/folders/1OP2R5ol97ZwfMgIE2ljn_IY2I_f4h7y4?usp=drive_link" target="_blank" rel="noopener">
-        <span class="poster-art" style="--tone-a:#7a1f5c;--tone-b:#2b0a20"><span class="poster-initial">C</span><span class="poster-play">&#9654;</span></span>
+        <span class="poster-art" style="background-image:url(imagens/captain_tsubasa_poster.jpeg);background-size:cover;background-position:center"><span class="poster-play">&#9654;</span></span>
       <span class="poster-caption"><span class="poster-title">Captain Tsubasa</span></span>
       </a>
       <a class="poster" href="https://drive.google.com/drive/folders/1Q5xja_lpGhdGq9QMNleAmOpldK5QGVXi?usp=drive_link" target="_blank" rel="noopener">
@@ -938,6 +941,10 @@
     if (!track || !scrollbar || !thumb) return;
     
     function updateScrollbar() {
+      // Se a barra customizada estiver oculta no CSS (caso do PC), não faz nada
+      if (window.getComputedStyle(scrollbar).display === 'none') {
+        return;
+      }
       const maxScroll = track.scrollWidth - track.clientWidth;
       if (maxScroll <= 0) {
         scrollbar.style.display = 'none';
